@@ -1,0 +1,18 @@
+@startuml NekoCafe_Sub_UseCase_Keeper
+left to right direction
+
+actor "猫咪管家" as Keeper
+
+rectangle "宠物档案管理模块" {
+  usecase "管理猫咪档案" as ManageCat
+  usecase "猫咪健康打卡" as HealthCheck
+  usecase "记录顾客互动记录" as InteractRecord
+  usecase "触发健康异常告警" as Alert
+}
+
+Keeper --> ManageCat
+Keeper --> HealthCheck
+Keeper --> InteractRecord
+
+HealthCheck <. Alert : <<extend>> (条件: 体征数据不在正常阈值内)
+@enduml

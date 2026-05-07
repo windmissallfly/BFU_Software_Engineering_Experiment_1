@@ -1,0 +1,34 @@
+@startuml
+skinparam defaultFontName "Microsoft YaHei"
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+package "4. 外部环境层 (External Environment)" as Layer4 #F5F5F5 {
+    actor "支付网关\n(微信/支付宝)" as Pay
+    actor "监管机构\n(卫生/动保)" as Reg
+
+    package "3. 间接影响层 (Beneficiaries)" as Layer3 #E3F2FD {
+        actor "总部运营总监" as HQ
+
+        package "2. 直接交互层 (Direct Users)" as Layer2 #BBDEFB {
+            actor "顾客" as Cust
+            actor "店员" as Staff
+            actor "店长" as Mgr
+            actor "猫咪管家" as Keeper
+
+            node "1. 核心层\n(NekoCafé 智慧餐饮平台)" as System #FFFFFF
+        }
+    }
+}
+
+' 建立交互关系
+Cust -down-> System : 预约/点单
+Staff -down-> System : 调度/接单
+Mgr -up-> System : 排班/看板
+Keeper -up-> System : 健康打卡
+
+HQ .down.> Layer2 : 依赖系统数据决策
+Pay .up.> Layer3 : 交易服务支撑
+Reg .up.> Layer3 : 合规约束
+
+@enduml

@@ -1,0 +1,11 @@
+@startuml uc_member
+' 会员子用例占位
+left to right direction
+actor 会员
+rectangle NekoCafé {
+  usecase "到访门店" as UC1
+  usecase "撸猫" as UC2
+}
+会员 --> UC1
+会员 --> UC2
+@enduml

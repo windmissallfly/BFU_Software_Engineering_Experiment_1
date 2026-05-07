@@ -1,0 +1,26 @@
+@startuml NekoCafe_Sub_UseCase_Customer
+left to right direction
+
+actor "顾客" as Customer
+actor "VIP会员" as VIPCustomer
+Customer <|-- VIPCustomer
+
+rectangle "预约与点单模块" {
+  usecase "用户登录" as Login
+  usecase "提交桌位预约" as Reserve
+  usecase "提交菜品订单" as Order
+  usecase "AI 智能推荐桌位/菜品" as AIRecommend
+  usecase "享受专享折扣" as VIPDiscount
+}
+
+Customer --> Reserve
+Customer --> Order
+VIPCustomer --> VIPDiscount
+
+Reserve .> Login : <<include>>
+Order .> Login : <<include>>
+
+Reserve <. AIRecommend : <<extend>> (条件: 开启个性化推荐)
+Order <. AIRecommend : <<extend>> (条件: 开启个性化推荐)
+VIPDiscount .> Order : <<extend>>
+@enduml
