@@ -1,0 +1,103 @@
+@startuml NekoCafe_ClassDiagram
+skinparam classAttributeIconSize 0
+
+abstract class 用户 {
+  # userId: String
+  # username: String
+  # phone: String
+  + login(): Boolean
+}
+
+class 顾客 {
+  - memberLevel: String
+  - preferenceTags: List<String>
+  + makeReservation(): void
+  + placeOrder(): void
+}
+
+class 员工 {
+  - staffId: String
+  - role: String
+  + processOrder(): void
+}
+
+class 管理者 {
+  - kpiData: String
+  + viewDashboard(): void
+}
+
+class 猫咪管家 {
+  - certNumber: String
+  + recordHealth(): void
+}
+
+用户 <|-- 顾客
+用户 <|-- 员工
+用户 <|-- 管理者
+用户 <|-- 猫咪管家
+
+class 门店 {
+  - storeId: String
+  - location: String
+  - capacity: Integer
+  + getAvailableTables(): List<桌子>
+}
+
+class 桌子 {
+  - tableId: String
+  - seatCount: Integer
+  - status: String
+  - catZone: String
+}
+
+class 猫咪 {
+  - catId: String
+  - name: String
+  - breed: String
+  - personality: String
+  - status: String
+}
+
+class 猫咪健康记录 {
+  - recordId: String
+  - checkDate: Date
+  - weight: Float
+  - isAbnormal: Boolean
+  - note: String
+}
+
+class 预约 {
+  - reservationId: String
+  - resvTime: DateTime
+  - guestCount: Integer
+  - status: String
+}
+
+class 订单 {
+  - orderId: String
+  - totalAmount: Float
+  - createTime: DateTime
+  - orderStatus: String
+}
+
+class 菜单元素 {
+  - itemId: String
+  - name: String
+  - price: Float
+  - category: String
+}
+
+class 订单元素 {
+  - quantity: Integer
+  - subTotal: Float
+}
+
+门店 "1" *-- "1..*" 桌子 : contains
+门店 "1" o-- "1..*" 猫咪 : houses
+猫咪 "1" *-- "0..*" 猫咪健康记录 : has
+顾客 "1" -- "0..*" 预约 : makes
+桌子 "1" -- "0..*" 预约 : booked for
+顾客 "1" -- "0..*" 订单 : places
+订单 "1" *-- "1..*" 订单元素 : contains
+订单元素 "0..*" -- "1" 菜单元素 : corresponds to
+@enduml

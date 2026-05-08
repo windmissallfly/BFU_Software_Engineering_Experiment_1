@@ -1,0 +1,29 @@
+@startuml NekoCafe_Sequence_StaffSchedule
+actor "店员" as Staff
+participant "Staff App" as App
+participant "Reservation Service" as ResvSvc
+participant "Notification Service" as NotifySvc
+database "Store DB" as DB
+
+Staff -> App : 扫描顾客预约码
+App -> ResvSvc : verifyReservation(qrCode)
+ResvSvc -> DB : 查询预约单状态
+DB --> ResvSvc : 返回预约详情
+ResvSvc --> App : 显示预约信息(人数, 偏好)
+
+Staff -> App : 点击"确认到店并分配桌位"
+App -> ResvSvc : assignTable(reservationId, tableId)
+activate ResvSvc
+ResvSvc -> DB : 更新 Table 状态为 "Occupied"
+ResvSvc -> DB : 更新 Reservation 状态为 "Completed"
+DB --> ResvSvc : 更新成功
+
+ResvSvc -> NotifySvc : triggerArrivalNotification(userId)
+activate NotifySvc
+NotifySvc --> ResvSvc : 推送成功
+deactivate NotifySvc
+
+ResvSvc --> App : 返回分配成功
+deactivate ResvSvc
+App --> Staff : 界面提示：引导顾客至指定桌位
+@enduml

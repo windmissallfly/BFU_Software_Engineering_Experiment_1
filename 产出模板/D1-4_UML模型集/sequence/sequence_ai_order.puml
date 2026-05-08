@@ -1,0 +1,38 @@
+@startuml NekoCafe_Sequence_AIOrder
+actor "顾客" as Customer
+participant "Mobile UI" as UI
+participant "API Gateway" as Gateway
+participant "Order Service" as OrderSvc
+participant "AI Recommend Service" as AISvc
+participant "Cat Profile Service" as CatSvc
+database "Order DB" as DB
+
+Customer -> UI : 发起浏览菜单请求(tableId)
+UI -> Gateway : GET /api/v1/menu?tableId=xxx
+Gateway -> OrderSvc : fetchMenu()
+OrderSvc -> AISvc : getRecommendation(userId, tableId)
+activate AISvc
+
+AISvc -> CatSvc : getCatsByTable(tableId)
+activate CatSvc
+CatSvc --> AISvc : 返回猫咪性格与档案数据
+deactivate CatSvc
+
+AISvc -> AISvc : 运行协同过滤与匹配算法
+AISvc --> OrderSvc : 返回AI推荐菜品列表
+deactivate AISvc
+
+OrderSvc --> Gateway : 返回完整菜单(含推荐标签)
+Gateway --> UI : 渲染个性化菜单
+UI --> Customer : 展示推荐菜品
+
+Customer -> UI : 选择菜品并提交订单
+UI -> Gateway : POST /api/v1/orders
+Gateway -> OrderSvc : createOrder(payload)
+activate OrderSvc
+OrderSvc -> DB : 插入订单数据
+DB --> OrderSvc : 返回成功
+OrderSvc --> Gateway : 返回 orderId
+deactivate OrderSvc
+Gateway --> UI : 跳转支付页面
+@enduml
